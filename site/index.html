@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en" x-data="app()" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Elizabeth Nina — Ingeniera de software con experiencia construyendo aplicaciones web escalables de extremo a extremo.">
+<meta name="keywords" content="software engineer, frontend, portfolio, Angular, fullstack-developer">
+<meta name="author" content="Elizabeth Nina">
+<meta property="og:title" content="Elizabeth Nina — Ingeniera de software">
+<meta property="og:description" content="I design and build digital products that people love to use.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://eliott.dev">
+<title>Elizabeth Nina — Ingeniera de software</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: { display: ['PT Sans','sans-serif'], body: ['DM Sans','sans-serif'] },
+      colors: { accent: '#15D8B3', 'accent-light': '#15D8B3' , secondary : '#2F39A9' }
+    }
+  }
+}
+</script>
+
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html,body{font-family:'DM Sans',sans-serif}
+h1,h2,h3,h4,h5,h6{font-family:'PT Sans',sans-serif}
+body{transition:background-color .3s,color .3s}
+
+/* noise overlay */
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.35;
+background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E")}
+
+/* scrollbar */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#15D8B3;border-radius:99px}
+
+/* reveal on scroll */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .6s cubic-bezier(.4,0,.2,1),transform .6s cubic-bezier(.4,0,.2,1)}
+.reveal.in{opacity:1;transform:none}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
+
+/* nav underline animation */
+.nl{position:relative}
+.nl::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1.5px;background:currentColor;transition:width .22s cubic-bezier(.4,0,.2,1)}
+.nl:hover::after,.nl.on::after{width:100%}
+.nl.on{font-weight:500}
+
+/* shimmer button */
+.shimmer{position:relative;overflow:hidden}
+.shimmer::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:rgba(255,255,255,.18);transform:skewX(-20deg);transition:left .4s cubic-bezier(.4,0,.2,1)}
+.shimmer:hover::after{left:160%}
+
+/* photo frames */
+.pf{overflow:hidden;background:#d4d4d8}
+.pf img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* card hover */
+.card-h{transition:transform .28s cubic-bezier(.4,0,.2,1),border-color .18s}
+.card-h:hover{transform:translateY(-4px)}
+
+/* skill tag */
+.stag{transition:border-color .18s}
+
+[x-cloak]{display:none!important}
+</style>
+</head>
+
+<body class="bg-white text-zinc-900 antialiased">
+
+<!-- ═══ NAV ═══ -->
+<header class="fixed inset-x-0 top-0 z-50 transition-all duration-300"
+  :class="sc?'bg-white/90 backdrop-blur-md shadow-sm shadow-black/5':''">
+  <nav class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between" aria-label="Main navigation">
+    <a href="#hero" class="font-display font-bold text-xl tracking-tight relative z-10">
+      <span class="bg-gradient-to-r from-accent via-60% via-secondary to-secondary bg-clip-text text-transparent">
+        ElizabethNina
+      </span>
+    </a>
+
+
+    <ul class="hidden md:flex items-center gap-8 text-sm" role="list">
+      <li><a href="#about"   class="nl text-zinc-500 hover:text-accent transition-colors" :class="s==='about'?'on !text-accent':''">Sobre mí</a></li>
+      <li><a href="#services" class="nl text-zinc-500 hover:text-accent transition-colors" :class="s==='services'?'on !text-accent':''">Experiencia</a></li>
+      <li><a href="#reviews" class="nl text-zinc-500 hover:text-accent transition-colors" :class="s==='reviews'?'on !text-accent ':''">Habilidades técnicas</a></li>
+      <li><a href="#blog"    class="nl text-zinc-500 hover:text-accent transition-colors" :class="s==='blog'?'on !text-accent':''">Certificaciones</a></li>
+      <li><a href="#work"     class="nl text-zinc-500 hover:text-accent transition-colors" :class="s==='work'?'on !text-accent':''">Proyectos</a></li>
+      <li><a href="#contact" class="nl text-zinc-500 hover:text-accent transition-colors" :class="s==='contact'?'on !text-accent':''">Contacto</a></li>
+    </ul>
+
+    <div class="flex items-center gap-3">
+      <!-- hamburger -->
+      <button @click="mm=!mm" class="md:hidden w-9 h-9 flex items-center text-secondary justify-center rounded-full border border-secondary" :aria-expanded="mm" aria-label="Toggle menu">
+        <svg x-show="!mm" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        <svg x-show="mm"  class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- mobile menu -->
+  <div x-show="mm" x-cloak
+    x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
+    x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2"
+    class="md:hidden bg-white border-t border-zinc-100">
+    <ul class="flex flex-col px-6 py-5 gap-4 text-sm font-medium" role="list">
+       <li><a href="#about"   @click="mm=false" class="block text-zinc-700 hover:text-accent transition-colors">Sobre mí</a></li>
+        <li><a href="#services" @click="mm=false" class="block text-zinc-700 hover:text-accent transition-colors">Experiencia</a></li>
+        <li><a href="#reviews" @click="mm=false" class="block text-zinc-700 hover:text-accent transition-colors">Habilidades técnicas</a></li>
+        <li><a href="#blog"    @click="mm=false" class="block text-zinc-700 hover:text-accent transition-colors">Certificaciones</a></li>
+        <li><a href="#work"     @click="mm=false" class="block text-zinc-700 hover:text-accent transition-colors">Proyectos</a></li>
+        <li><a href="#contact" @click="mm=false" class="block text-zinc-700 hover:text-accent transition-colors">Contacto</a></li>
+    </ul>
+  </div>
+</header>
+
+<main>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero" class="relative min-h-screen flex items-center pt-16 overflow-hidden">
+  <div class="absolute top-1/4 right-0 w-96 h-96 bg-accent/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+  <div class="absolute bottom-1/4 left-0 w-64 h-64 bg-zinc-200/50 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+
+  <div class="relative z-10 max-w-6xl mx-auto px-6 py-24 w-full">
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+
+      <div>
+        <h1 class="reveal d1 font-display font-bold text-5xl md:text-6xl lg:text-7xl leading-[1.05] tracking-tight text-zinc-900 mb-6">
+          Hola, soy <span class="text-accent">Elizabeth Nina</span>
+        </h1>
+        <p class="reveal text-sm font-medium text-accent tracking-widest uppercase mb-4">Ingeniera de software</p>
+        <p class="reveal d2 text-lg md:text-xl text-zinc-500 font-light leading-relaxed max-w-md mb-10">
+          Profesional con experiencia construyendo aplicaciones web escalables de extremo a extremo. 
+          
+        </p>
+        <div class="reveal d3 flex flex-wrap gap-4">
+          <a href="#services" class="shimmer inline-flex items-center gap-2 bg-secondary font-bold text-white px-7 py-3.5 rounded-full hover:bg-secondary-700 transition-colors text-sm">
+            Ver mi experiencia
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </a>
+          <a href="#contact" class="inline-flex items-center gap-2 border border-secondary text-secondary font-bold px-7 py-3.5 rounded-full hover:bg-zinc-50 transition-colors text-sm">Contáctame</a>
+        </div>
+        <div class="reveal d4 flex gap-8 mt-10 pt-8 border-t border-zinc-100 ">
+          <div><p class="font-display font-bold text-3xl text-secondary">Full Stack</p><p class="text-xs text-zinc-500 mt-1">En constante evolución</p></div>
+          <div><p class="font-display font-bold text-3xl text-secondary">3</p><p class="text-xs text-zinc-500  mt-1">Años de experiencia</p></div>
+        </div>
+      </div>
+
+      <div class="reveal d2 flex justify-center md:justify-end pt-0" style="height: 600px;">
+        <div class="relative" style="height: 300px;">
+          <div class=" w-auto  rounded-3xl" style="height: 300px;">
+            <img src="home-photo.png" alt="ElizabethNina" loading="eager">
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<!-- ═══ ABOUT ═══ -->
+<section id="about" class="py-24 bg-gradient-to-r from-accent via-40% via-secondary to-secondary">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="grid md:grid-cols-2 gap-16 items-center">
+
+      <div class="reveal order-2 md:order-1">
+        <div class="w-full aspect-square max-w-sm mx-auto rounded-3xl">
+          <img src="about_me.PNG" alt="ElizabethNina" loading="lazy">
+        </div>
+      </div>
+
+      <div class="order-1 md:order-2">
+        <p class="reveal text-xs font-medium text-white tracking-widest uppercase mb-3">Sobre mí</p>
+        <h2 class="reveal d1 font-display font-bold text-4xl md:text-5xl text-white leading-tight mb-6">Mi perfil<br>profesional</h2>
+        <p class="reveal d2 text-white leading-relaxed mb-4">
+          Soy una Ingeniera de Software enfocada en la ejecución precisa de tareas y la resolución estructurada de problemas. Mi trayectoria combina una sólida formación académica en la UPC —donde me mantuve en el quinto superior de mi carrera— con experiencia real en entornos corporativos de alta exigencia. Me caracterizo por una comunicación concisa y directa, lo que me permite conectar eficazmente con equipos multidisciplinarios y adaptarme rápidamente a nuevas dinámicas de trabajo. Más allá de escribir código, disfruto entender el impacto del software en el negocio y asumo con total responsabilidad el ciclo completo de una aplicación, desde la interfaz hasta su despliegue en producción.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+<!-- ═══ SERVICES ═══ -->
+<section id="services" class="py-24">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="mb-14">
+      <p class="reveal text-xs font-medium text-accent tracking-widest uppercase mb-3">Mi evolución</p>
+      <h2 class="reveal d1 font-display font-bold text-4xl md:text-5xl text-secondary">Experiencia laboral</h2>
+    </div>
+    <div class="grid md:grid-cols-2 gap-6">
+
+      <article class="reveal d1 card-h group bg-white  rounded-2xl p-8 border border-accent">
+        <img src="itana.png" alt="ElizabethNina" loading="lazy" class="max-h-[100px] w-auto object-contain pb-5">
+        
+        <h3 class="font-display font-bold text-xl text-accent mb-3">Practicante de Ingeniería de Software (2023)</h3>
+        
+        <p class="reveal text-sm font-medium text-accent tracking-widest uppercase mb-4">1 año</p>
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="text-xs bg-secondary text-white px-3 py-1 rounded-full">Angular</span>
+            <span class="text-xs bg-secondary text-white px-3 py-1 rounded-full">Spring Boot</span>
+            <span class="text-xs bg-secondary text-white px-3 py-1 rounded-full">MySQL</span>
+            <span class="text-xs bg-secondary text-white px-3 py-1 rounded-full">Github</span>
+            <span class="text-xs bg-secondary text-white px-3 py-1 rounded-full">Figma</span>
+          </div>
+        <ul>
+          <li>
+            <p class="text-sm text-zinc-500 leading-relaxed pb-2">
+              &#10003; Desarrollé la arquitectura Full Stack y lideré el desarrollo integral de módulos complejos, conectando de extremo a extremo el frontend en Angular con endpoints de API REST en Java Spring Boot, además de asegurar la consistencia de datos mediante validaciones rigurosas en Postman.</p>
+          </li>
+          <li>
+            <p class="text-sm text-zinc-500 leading-relaxed pb-2">
+              &#10003; Diseñé el producto y la UX/UI prototipando desde cero en Figma el flujo completo y la arquitectura de información de más de 6 módulos para sistemas de inventario y facturación, logrando una transición óptima desde el diseño hasta el código funcional.</p>
+          </li>
+          <li>
+            <p class="text-sm text-zinc-500 leading-relaxed pb-2">
+              &#10003; Integré servicios de facturación electrónica mediante la interconexión con la API de NubeFacT en el backend con Java Spring Boot, habilitando la emisión automática y legal de boletas y facturas electrónicas para un sistema de ventas.</p>
+          </li>
+          <li>
+            <p class="text-sm text-zinc-500 leading-relaxed">
+              &#10003; Aseguré la entrega constante de software mediante el control de versiones en GitHub, gestionando el flujo de ramas e integrando código de manera continua para minimizar errores en los despliegues de producción.</p>
+          </li>
+        </ul>
+        </article>
+
+      <article class="reveal d1 card-h group bg-white  rounded-2xl p-8 border border-accent">
+        <img src="inventiva-solutions.jfif" alt="ElizabethNina" loading="lazy" class="max-h-[100px] w-auto object-contain  pb-5">
+        
+        <h3 class="font-display font-bold text-xl text-accent mb-3">Ingeniera de software (2024 - 2026)</h3>
+        
+        <p class="reveal text-sm font-medium text-accent tracking-widest uppercase mb-4">2 años</p>
+        <div class="flex flex-wrap gap-2 mb-4">
+            <span class="text-xs bg-secondary text-white px-3 py-1 rounded-full">Angular</span>
+            <span class="text-xs bg-secondary text-white px-3 py-1 rounded-full">.NET</span>
+            <span class="text-xs bg-secondary text-white px-3 py-1 rounded-full">SQL Server</span>
+            <span class="text-xs bg-secondary text-white px-3 py-1 rounded-full">Azure DevOps</span>
+            <span class="text-xs bg-secondary text-white px-3 py-1 rounded-full">Figma</span>
+          </div>
+        <ul>
+          
+          <li>
+            <p class="text-sm text-zinc-500 leading-relaxed pb-2">
+              &#10003; Colaboré en la implementación de una arquitectura de monorepositorio en Angular (unificación de múltiples portales de clientes) bajo los principios de Clean Architecture, lo que permitió la reutilización de componentes y asegurar que cualquier actualización se reflejara en todos los portales de manera simultánea y centralizada.</p>
+          </li>
+          
+          <li>
+            <p class="text-sm text-zinc-500 leading-relaxed pb-2">
+              &#10003; Desarrollé desde cero una aplicación web (Angular / .NET) para la cotización y emisión de pólizas de seguros en México, abarcando desde el diseño en Figma hasta la puesta en producción para optimizar la experiencia de usuario (UX/UI) en los puntos de venta.</p>
+          </li>
+          
+          <li>
+            <p class="text-sm text-zinc-500 leading-relaxed pb-2">
+              &#10003; Migré y limpié bases de datos vehiculares masivas extrayendo información desde archivos Excel hacia SQL Server mediante consultas y scripts de depuración avanzados, asegurando la integridad de los datos para la correcta carga de información en el cotizador.</p>
+          </li>
+          
+          <li>
+            <p class="text-sm text-zinc-500 leading-relaxed pb-2">
+              &#10003; Migré el producto principal a la versión más reciente de Ext.NET y optimicé Stored Procedures en SQL Server, solucionando cuellos de botella y refactorizando sistemas críticos.</p>
+          </li>
+          <li>
+            <p class="text-sm text-zinc-500 leading-relaxed pb-2">
+              &#10003; Optimicé las interfaces y el rendimiento UI al diagnosticar y resolver problemas críticos de rendimiento en la carga de datos, renderizado de grillas complejas y visualización en aplicaciones frontend construidas en Angular.</p>
+          </li>
+          <li>
+            <p class="text-sm text-zinc-500 leading-relaxed">
+              &#10003; Adopté una cultura DevOps y gestión ágil administrando el ciclo de vida de las aplicaciones con Azure DevOps para el control de versiones (Git, Pull Requests), despliegues y publicaciones de código, mientras coordinaba las actividades diarias mediante Monday.</p>
+          </li>
+        </ul>
+      </article>
+
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TESTIMONIALS ═══ -->
+<section id="reviews" class="py-24">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="mb-14">
+      <p class="reveal text-xs font-medium text-accent tracking-widest uppercase mb-3">Mi stack</p>
+      <h2 class="reveal d1 font-display font-bold text-4xl md:text-5xl text-secondary">Habilidades técnicas</h2>
+    </div>
+
+          
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-x-8 gap-y-12 items-center justify-center">
+
+  <!-- 1. .NET -->
+  <div class="flex items-center justify-center">
+    <img src=".net.webp" alt=".NET" loading="lazy" class="max-h-[100px] w-auto object-contain">
+  </div>
+
+  <!-- 2. Angular -->
+  <div class="flex items-center justify-center">
+    <img src="angular.webp" alt="Angular" loading="lazy" class="max-h-[100px] w-auto object-contain">
+  </div>
+
+  <!-- 3. Azure -->
+  <div class="flex items-center justify-center">
+    <img src="Azure.jpg" alt="Azure" loading="lazy" class="max-h-[100px] w-auto object-contain">
+  </div>
+
+  <!-- 5. Figma -->
+  <div class="flex items-center justify-center">
+    <img src="figma.png" alt="Figma" loading="lazy" class="max-h-[100px] w-auto object-contain">
+  </div>
+
+  <!-- 6. Git -->
+  <div class="flex items-center justify-center">
+    <img src="git.png" alt="Git" loading="lazy" class="max-h-[100px] w-auto object-contain">
+  </div>
+
+  <!-- 7. GitHub -->
+  <div class="flex items-center justify-center">
+    <img src="github.png" alt="GitHub" loading="lazy" class="max-h-[100px] w-auto object-contain">
+  </div>
+
+  <!-- 8. Java -->
+  <div class="flex items-center justify-center">
+    <img src="java.png" alt="Java" loading="lazy" class="max-h-[100px] w-auto object-contain">
+  </div>
+
+  <!-- 9. JavaScript -->
+  <div class="flex items-center justify-center">
+    <img src="javascript.png" alt="JavaScript" loading="lazy" class="max-h-[100px] w-auto object-contain">
+  </div>
+
+  <!-- 10. Jira -->
+  <div class="flex items-center justify-center">
+    <img src="jira.png" alt="Jira" loading="lazy" class="max-h-[100px] w-auto object-contain">
+  </div>
+
+  <!-- 11. MySQL -->
+  <div class="flex items-center justify-center">
+    <img src="mysql.png" alt="MySQL" loading="lazy" class="max-h-[100px] w-auto object-contain">
+  </div>
+
+  <!-- 12. OpenAI -->
+  <div class="flex items-center justify-center">
+    <img src="openai.jpg" alt="OpenAI" loading="lazy" class="max-h-[100px] w-auto object-contain">
+  </div>
+
+  <!-- 13. Postman (Mantiene tu ruta física: postamn.jfif) -->
+  <div class="flex items-center justify-center">
+    <img src="postman.jfif" alt="Postman" loading="lazy" class="max-h-[100px] w-auto object-contain">
+  </div>
+
+  <!-- 14. Spring -->
+  <div class="flex items-center justify-center">
+    <img src="spring.png" alt="Spring Boot" loading="lazy" class="max-h-[100px] w-auto object-contain">
+  </div>
+
+  <!-- 15. SQL -->
+  <div class="flex items-center justify-center">
+    <img src="sql.png" alt="SQL Server" loading="lazy" class="max-h-[100px] w-auto object-contain">
+  </div>
+
+  <!-- 16. TypeScript -->
+  <div class="flex items-center justify-center">
+    <img src="Typescript.webp" alt="TypeScript" loading="lazy" class="max-h-[100px] w-auto object-contain">
+  </div>
+
+</div>
+
+  </div>
+</section>
+
+
+<!-- ═══ BLOG ═══ -->
+<section id="blog" class="py-24 bg-gradient-to-r from-accent via-40% via-secondary to-secondary">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
+      <div>
+        <p class="reveal text-xs font-medium text-white tracking-widest uppercase mb-3">Educación continua</p>
+        <h2 class="reveal d1 font-display font-bold text-4xl md:text-5xl text-white ">Certificaciones</h2>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <article class="reveal d1 card-h group bg-white rounded-2xl overflow-hidden border border-zinc-100 ">
+        <div class="pf w-full h-50">
+          <img src="scrum.JPG" alt="Why I ditched CSS frameworks" loading="lazy">
+        </div>
+        <div class="p-6">
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="text-xs bg-secondary text-white px-3 py-1 rounded-full">Scrum.org</span>
+          </div>
+          <a href="blog-article.html">
+            <h3 class="font-display font-bold text-lg text-secondary mb-2 transition-colors">
+              Professional Scrum Master I
+            </h3>
+          </a>
+          <p class="text-sm text-zinc-500  leading-relaxed mb-4">Certificación internacional que valida un conocimiento profundo del marco de trabajo Scrum, sus principios ágiles y la responsabilidad del Scrum Master como facilitador del éxito del equipo y la organización.</p>
+        </div>
+      </article>
+      <article class="reveal d1 card-h group bg-white rounded-2xl overflow-hidden border border-zinc-100 ">
+        <div class="pf w-full h-50">
+          <img src="powerbi.JPG" alt="Why I ditched CSS frameworks" loading="lazy">
+        </div>
+        <div class="p-6">
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="text-xs bg-secondary text-white px-3 py-1 rounded-full">Zegel</span>
+          </div>
+          <a href="blog-article.html">
+            <h3 class="font-display font-bold text-lg text-secondary mb-2 transition-colors">
+              Power BI
+            </h3>
+          </a>
+          <p class="text-sm text-zinc-500  leading-relaxed mb-4">Capacitación técnica especializada en la arquitectura, extracción, transformación y modelado de datos utilizando el entorno de Power BI (Desktop). El curso abarca desde la ingesta de datos multiorigen y su manipulación mediante Power Query, hasta el diseño e implementación de modelos de datos relacionales, tableros de control y objetos visuales avanzados para optimizar la toma de decisiones basada en datos.</p>
+        </div>
+      </article>
+      <article class="reveal d1 card-h group bg-white rounded-2xl overflow-hidden border border-zinc-100 ">
+        <div class="pf w-full h-50">
+          <img src="ZEGEL_SQL.JPG" alt="Why I ditched CSS frameworks" loading="lazy">
+        </div>
+        <div class="p-6">
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="text-xs bg-secondary text-white px-3 py-1 rounded-full">Zegel</span>
+          </div>
+          <a href="blog-article.html">
+            <h3 class="font-display font-bold text-lg text-secondary mb-2 transition-colors">
+              Gestión de Base de Datos con SQL
+            </h3>
+          </a>
+          <p class="text-sm text-zinc-500  leading-relaxed mb-4">Curso enfocado en el modelado, diseño conceptual y administración de bases de datos relacionales en Microsoft SQL Server. Domina el análisis sintáctico del lenguaje Transact-SQL, la lógica algorítmica para cruces de información (JOINs) y los patrones arquitectónicos de almacenes de datos DWH (capas ODS y BDS). Incluye los principios fundamentales de resiliencia de datos, auditoría de buenas prácticas y optimización analítica de queries.</p>
+        </div>
+      </article>
+      <article class="reveal d1 card-h group bg-white rounded-2xl overflow-hidden border border-zinc-100 ">
+        <div class="pf w-full h-50">
+          <img src="ZEGEL-MACHINELEARNING.JPG" alt="Why I ditched CSS frameworks" loading="lazy">
+        </div>
+        <div class="p-6">
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="text-xs bg-secondary text-white px-3 py-1 rounded-full">Zegel</span>
+          </div>
+          <a href="blog-article.html">
+            <h3 class="font-display font-bold text-lg text-secondary mb-2 transition-colors">
+              Machine Learning
+            </h3>
+          </a>
+          <p class="text-sm text-zinc-500  leading-relaxed mb-4">Curso sobre conceptos, enfoques y fases de un proyecto de Machine Learning. Comprende el ciclo analítico mediante la metodología CRISP-DM, modelos de aprendizaje supervisado (árboles, redes neuronales, SVM) y no supervisado (k-means, reducción de dimensionalidad). Introduce el uso de herramientas como R y Python aplicadas a un caso práctico de análisis y modelado predictivo financiero.</p>
+        </div>
+      </article>
+      <article class="reveal d1 card-h group bg-white rounded-2xl overflow-hidden border border-zinc-100 ">
+        <div class="pf w-full h-50">
+          <img src="googleCertificate.JPG" alt="Why I ditched CSS frameworks" loading="lazy">
+        </div>
+        <div class="p-6">
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="text-xs bg-secondary text-white px-3 py-1 rounded-full">Google</span>
+          </div>
+          <a href="blog-article.html">
+            <h3 class="font-display font-bold text-lg text-secondary mb-2 transition-colors">
+              System Administration and IT Infrastructure Services
+            </h3>
+          </a>
+          <p class="text-sm text-zinc-500  leading-relaxed mb-4">Curso enfocado en la transición del soporte técnico individual a la gestión de flotas enteras de computadoras y sistemas multiusuario. El programa cubre la configuración de servidores, administración de infraestructura en la nube, gestión de identidades y planes de continuidad del negocio ante desastres.</p>
+        </div>
+      </article>
+
+      <article class="reveal d1 card-h group bg-white rounded-2xl overflow-hidden border border-zinc-100 hover:border-accent">
+        <div class="pf w-full h-50">
+          <img src="googleCertificate.JPG" alt="Why I ditched CSS frameworks" loading="lazy">
+        </div>
+        <div class="p-6">
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="text-xs bg-secondary text-white px-3 py-1 rounded-full">Google</span>
+          </div>
+          <a href="blog-article.html">
+            <h3 class="font-display font-bold text-lg text-secondary mb-2 transition-colors">
+              IT Security: Defense against the digital dark arts
+            </h3>
+          </a>
+          <p class="text-sm text-zinc-500  leading-relaxed mb-4">Curso de capacitación en el diseño de arquitecturas de seguridad de múltiples capas y la mitigación de riesgos informáticos. El programa cubre desde los fundamentos de criptografía hasta la implementación de soluciones de red y la automatización de tareas de TI mediante Inteligencia Artificial.</p>
+        </div>
+      </article>
+
+      <article class="reveal d1 card-h group bg-white rounded-2xl overflow-hidden border border-zinc-100 hover:border-accent">
+        <div class="pf w-full h-50">
+          <img src="ibm.JPG" alt="Why I ditched CSS frameworks" loading="lazy">
+        </div>
+        <div class="p-6">
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="text-xs bg-secondary text-white px-3 py-1 rounded-full">IBM</span>
+          </div>
+          <a href="blog-article.html">
+            <h3 class="font-display font-bold text-lg text-secondary mb-2 transition-colors">
+              IBM Cybersecurity Analyst
+            </h3>
+          </a>
+          <p class="text-sm text-zinc-500  leading-relaxed mb-4">Certificación profesional enfocada en la protección de sistemas, análisis de amenazas y mitigación de riesgos. Desarrolla competencias clave en auditoría de cumplimiento, seguridad en redes, uso de herramientas avanzadas y aplicación de IA generativa para la defensa cibernética.</p>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+<!-- ═══ WORK ═══ -->
+<section id="work" class="py-24">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-14">
+      <div>
+        <p class="reveal text-xs font-medium text-accent tracking-widest uppercase mb-3">Aplicaciones web</p>
+        <h2 class="reveal d1 font-display font-bold text-4xl md:text-5xl text-secondary ">Proyectos personales</h2>
+      </div>
+       </div>
+
+    <div class="grid md:grid-cols-2 gap-6">
+
+      <article class="card-h reveal d1 group rounded-2xl overflow-hidden border border-accent">
+        <div class="pf w-full h-64 md:h-80">
+          <img src="journal_paper.JPG" alt="Novu SaaS Dashboard" loading="lazy">
+        </div>
+        <div class="p-7">
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="text-xs bg-secondary text-white px-3 py-1 rounded-full">Journal paper</span>
+          </div>
+          <a href="case-study.html">
+            <h3 class="font-display font-bold text-xl text-accent mb-2">SocialBullyAlert: A Web Application for Cyberbullying Detection on Minors' Social Media
+            <a href="https://thesai.org/Downloads/Volume15No7/Paper_76-SocialBullyAlert_A_Web_Application_for_Cyberbullying_Detection.pdf" rel="noopener noreferrer" target="_blank" class="group flex items-center gap-3 text-secondary hover:text-accent transition-colors">
+                <span class="text-md">(Ver paper)</span>
+              </a>
+            </h3>
+          </a>
+          <p class="text-sm text-zinc-500 leading-relaxed mb-2">&#10003; Realicé el fine-tuning de un modelo de Inteligencia Artificial de OpenAI utilizando conjuntos de datos extraídos de diversos estudios académicos para optimizar la precisión en la detección de ciberacoso.</p>
+          <p class="text-sm text-zinc-500 leading-relaxed mb-2">&#10003; Integré procesos de scraping automatizado con Apify para la extracción eficiente y masiva de la data social que posteriormente era analizada por los modelos de IA.</p>
+          <p class="text-sm text-zinc-500 leading-relaxed mb-2">&#10003; Diseñé y desarrollé la arquitectura del backend utilizando Java 17 y Spring Boot 3, aplicando los principios de DDD (Domain Driven Design), además de robustecer el sistema con Spring Security (OAuth2/JWT).</p>
+          <p class="text-sm text-zinc-500 leading-relaxed">&#10003; Diseñé y desarrollé el frontend en Angular enfocándome en una interfaz de alta responsividad y una experiencia de usuario (UX/UI) óptima, validada de manera directa mediante pruebas con usuarios reales.</p>
+         
+        </div>
+      </article>
+
+      <article class="card-h reveal d2 group rounded-2xl overflow-hidden border border-accent">
+        <div class="pf w-full h-45">
+          <img src="conference-paper.JPG" alt="Finlo Fintech App" loading="lazy">
+        </div>
+        <div class="p-6">
+          <div class="flex flex-wrap gap-2 mb-3">
+            <span class="text-xs bg-secondary text-white px-3 py-1 rounded-full">Conference paper</span>
+          </div>
+          <a href="case-study.html">
+            <h3 class="font-display font-bold text-xl text-accent mb-1.5">Multilingual Detection of Cyberbullying on Social Networks Using a Fine-Tuned GPT-3.5 Model
+              <a href="https://doi.org/10.1007/978-3-031-66705-3_17" rel="noopener noreferrer" target="_blank" class="group flex items-center gap-3 text-secondary hover:text-accent transition-colors">
+                <span class="text-md">(Ver paper)</span>
+              </a></h3>
+          </a>
+          <p class="text-sm text-zinc-500 leading-relaxed mb-2">&#10003; Programé scripts en Python para extraer, limpiar y normalizar un gran volumen de datos de más de 61,000 registros provenientes de 6 fuentes, diseñando una lógica de negocio que unificó esquemas conflictivos en una arquitectura multi-etiqueta y procesó más de 25,000 textos enfocados en modismos y jergas regionales de España, Perú y Chile.</p>
+          <p class="text-sm text-zinc-500 leading-relaxed mb-2">&#10003; Automaticé la división del dataset (80% entrenamiento / 20% validación) usando scikit-learn y serialicé los datos en archivos JSONL estructurados para la API de OpenAI.</p>
+          <p class="text-sm text-zinc-500 leading-relaxed mb-2">&#10003; Orquesté la configuración y el entrenamiento en la nube del modelo gpt-3.5-turbo-1106 para procesar un volumen de más de 2.9 millones de tokens.</p>
+          <p class="text-sm text-zinc-500 leading-relaxed">&#10003; Ejecuté pruebas de calidad del software sometiendo el modelo a 12,324 muestras de validación no vistas, donde mi solución demostró una precisión del 82.6% y un 87.4% de accuracy, reduciendo drásticamente los falsos positivos para su viabilidad en producción.</p>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+<!-- ═══ CONTACT ═══ -->
+<section id="contact" class="py-24">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="bg-gradient-to-r from-accent via-40% via-secondary to-secondary rounded-3xl p-10 md:p-16 relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-64 h-64 bg-accent/20 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+      <div class="absolute bottom-0 left-0 w-40 h-40 bg-accent/10 rounded-full blur-2xl pointer-events-none" aria-hidden="true"></div>
+
+      <div class="relative z-10 grid md:grid-cols-1 gap-12 items-center">
+
+        <div>
+          <p class="reveal text-xs font-medium text-white tracking-widest uppercase mb-3 text-center">Contacto</p>
+          <h2 class="reveal d1 font-display font-bold text-4xl md:text-5xl text-white leading-tight mb-5 text-center">Trabajemos juntos</h2>
+          <p class="reveal d2 text-white leading-relaxed mb-8 text-center">Estoy interesada en integrarme a nuevos sectores, resolver problemas complejos y seguir expandiendo mi stack. Conéctate conmigo a través de mis redes o envíame un correo directamente.</p>
+          <!-- Contenedor Padre: Activa las 3 columnas en escritorio y añade la animación reveal -->
+          <div class="reveal d3 grid grid-cols-1 md:grid-cols-3 gap-6 items-center justify-center pt-10 pb-10">
+
+            <!-- Columna 1: Correo -->
+            <div class="flex justify-center md:justify-center">
+              <a href="mailto:elizabeth.nina010901@gmail.com" class="group flex items-center gap-3 text-white hover:text-accent transition-colors">
+                <span class="w-12 h-12 flex items-center text-secondary justify-center bg-white rounded-lg group-hover:bg-accent transition-colors shrink-0 group-hover:text-white">
+                  <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                </span>
+                <span class="text-md">elizabeth.nina010901@gmail.com</span>
+              </a>
+            </div>
+
+            <!-- Columna 2: LinkedIn -->
+            <div class="flex justify-center md:justify-center">
+              <a href="https://www.linkedin.com/in/elizabethnina/" rel="noopener noreferrer" target="_blank" class="group flex items-center gap-3 text-white hover:text-accent transition-colors">
+                <span class="w-12 h-12 flex items-center text-secondary justify-center bg-white rounded-lg group-hover:bg-accent transition-colors shrink-0 group-hover:text-white">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </span>
+                <span class="text-md">linkedin.com/in/elizabethnina</span>
+              </a>
+            </div>
+
+            <!-- Columna 3: GitHub -->
+            <div class="flex justify-center md:justify-center">
+              <a href="https://github.com/ElizabethNina02" rel="noopener noreferrer" target="_blank" class="group flex items-center gap-3 text-white hover:text-accent transition-colors">
+                <span class="w-12 h-12 flex items-center text-secondary justify-center bg-white rounded-lg group-hover:bg-accent transition-colors shrink-0 group-hover:text-white">
+                  <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                </span>
+                <span class="text-md">github.com/ElizabethNina02</span>
+              </a>
+            </div>
+
+          </div>
+
+
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+function app() {
+  return {
+    mm: false,
+    sc: false,
+    s: 'hero',
+
+    init() {
+
+      // scroll
+      window.addEventListener('scroll', () => {
+        this.sc = window.scrollY > 20;
+        this.updateSection();
+      }, { passive: true });
+
+      // reveal
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+      document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+      // year
+      document.getElementById('yr').textContent = new Date().getFullYear();
+    },
+
+    updateSection() {
+  const atBottom = (window.innerHeight + window.scrollY) >= document.body.scrollHeight - 60;
+  
+  // 1. DIAGNÓSTICO DE FONDO: Verifica si detecta que llegaste al final
+  console.log(`¿Está en el fondo?: ${atBottom} (ScrollY: ${window.scrollY}, Total: ${document.body.scrollHeight})`);
+  
+  if (atBottom) { 
+    this.s = 'contact'; 
+    console.log("Sección forzada a: contact (por estar al fondo)");
+    return; 
+  }
+  
+  const ids = ['contact',  'work', 'blog','reviews',  'services', 'about','hero'];
+  
+  for (const id of ids) {
+    const el = document.getElementById(id);
+    
+    // 2. DIAGNÓSTICO DE SECCIÓN: Si el ID no existe en tu HTML, te avisará aquí
+    if (!el) {
+      console.warn(`Alerta: No se encontró ningún elemento con el ID: "${id}"`);
+      continue;
+    }
+
+    const triggerPoint = el.offsetTop - 130;
+    
+    // 3. DIAGNÓSTICO DE CÁLCULO: Mira qué números está comparando el navegador
+    if (window.scrollY >= triggerPoint) {
+      console.log(`🎯 ¡Match! Sección activa: "${id}" porque ScrollY (${window.scrollY}) es mayor o igual a offsetTop ${el.offsetTop} - 130 (${triggerPoint})`);
+      this.s = id; 
+      return; 
+    }
+  }
+}
+
+  }
+}
+</script>
+
+</body>
+</html>
